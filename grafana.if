@@ -139,3 +139,55 @@ interface(`grafana_admin',`
 		systemd_read_fifo_file_passwd_run($1)
 	')
 ')
+
+########################################
+## <summary>
+## Execute the grafana unconfined plugins with
+## a domain transition.
+## </summary>
+## <param name="domain">
+## <summary>
+## Domain allowed access.
+## </summary>
+## </param>
+#
+interface(`grafana_domtrans_unconfined_plugins',`
+   gen_require(`
+        type grafana_unconfined_plugin_t;
+        type grafana_unconfined_plugin_exec_t;
+   ')
+
+    domtrans_pattern($1, grafana_unconfined_plugin_exec_t, grafana_unconfined_plugin_t)
+')
+
+########################################
+## <summary>
+##	Create a set of derived types for various
+##	grafana plugins,
+## </summary>
+## <param name="plugins_group_name">
+##	<summary>
+##	The name to be used for deriving type names.
+##	</summary>
+## </param>
+#
+template(`grafana_plugin_template',`
+	gen_require(`
+		attribute grafana_plugin_domain;
+		type grafana_t;
+	')
+
+	type grafana_$1_plugin_t, grafana_plugin_domain;
+	type grafana_$1_plugin_exec_t;
+	application_domain(grafana_$1_plugin_t, grafana_$1_plugin_exec_t)
+	role system_r types grafana_$1_plugin_t;
+
+	domtrans_pattern(grafana_t, grafana_$1_plugin_exec_t, grafana_$1_plugin_t)
+	allow grafana_t grafana_$1_plugin_exec_t:file ioctl; 
+
+	# needed by command.cfg
+	domtrans_pattern(grafana_t, grafana_$1_plugin_exec_t, grafana_$1_plugin_t)
+
+	kernel_read_system_state(grafana_$1_plugin_t)
+
+')

@@ -34,6 +34,7 @@ gen_tunable(grafana_can_tcp_connect_mysql_port, false)
 ## </desc>
 gen_tunable(grafana_can_tcp_connect_prometheus_port, false)
 
+attribute grafana_plugin_domain;
 
 type grafana_t;
 type grafana_exec_t;
@@ -67,6 +68,27 @@ files_type(grafana_var_lib_t)
 type grafana_port_t;
 corenet_port(grafana_port_t)
 
+grafana_plugin_template(pcp)
+
+######################################
+#
+# Common plugin domain local policy
+#
+
+allow grafana_plugin_domain self:fifo_file rw_fifo_file_perms;
+   
+allow grafana_t grafana_plugin_domain:process signal_perms;
+allow grafana_plugin_domain grafana_t:process signal_perms;
+
+corecmd_exec_bin(grafana_plugin_domain)
+
+dev_read_urand(grafana_plugin_domain)
+dev_read_rand(grafana_plugin_domain)
+dev_read_sysfs(grafana_plugin_domain)
+
+userdom_use_inherited_user_ptys(grafana_plugin_domain)
+userdom_use_inherited_user_ttys(grafana_plugin_domain)
+
 ########################################
 #
 # grafana local policy
@@ -76,6 +98,14 @@ allow grafana_t self:udp_socket create_stream_socket_perms;
 allow grafana_t self:unix_dgram_socket create_socket_perms;
 
 allow grafana_t grafana_port_t:tcp_socket { name_bind name_connect };
+
+#allow grafana_t grafana_exec_t:file execute_no_trans;
+allow grafana_t self:unix_stream_socket connectto;
+
+allow grafana_t grafana_var_lib_t:file { execute execute_no_trans };
+allow grafana_t grafana_var_lib_t:file map;
+
+allow init_t grafana_tmp_t:sock_file unlink;
 
 manage_dirs_pattern(grafana_t, grafana_conf_t, grafana_conf_t)
 manage_files_pattern(grafana_t, grafana_conf_t, grafana_conf_t)
