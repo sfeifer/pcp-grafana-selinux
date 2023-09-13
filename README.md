@@ -36,6 +36,7 @@ restorecon -RvF /usr/sbin/grafana-* \
 		/etc/grafana \
 		/var/log/grafana \
 		/var/lib/grafana \
+		/usr/share/performancecopilot-pcp-app \
 		/usr/share/grafana/bin
 
 # Start grafana
@@ -68,6 +69,16 @@ ausearch -m avc,user_avc,selinux_err -ts recent | audit2allow -R
 If you get a could not open interface info [/var/lib/sepolgen/interface_info] error. 
 Ensure policycoreutils-devel is installed and/or run: `sepolgen-ifgen`
 
+## Removing the policy
+
+* To remove the policy, the added port must first be removed
+```sh
+sudo semanage port -d -p tcp 3000
+```
+* Now, to remove the policy run
+```sh
+sudo semodule -r grafana
+```
 ## Compatibility Notes
 Built on CentOS Stream 9 at the time with:
 ```
