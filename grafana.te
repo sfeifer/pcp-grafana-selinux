@@ -87,8 +87,6 @@ allow grafana_t grafana_port_t:tcp_socket { name_bind name_connect };
 
 allow grafana_t self:unix_stream_socket connectto;
 
-allow init_t grafana_tmp_t:sock_file unlink;
-
 manage_dirs_pattern(grafana_t, grafana_conf_t, grafana_conf_t)
 manage_files_pattern(grafana_t, grafana_conf_t, grafana_conf_t)
 
@@ -154,4 +152,8 @@ tunable_policy(`grafana_can_tcp_connect_mysql_port',` # Mysql default tcp port 3
 
 tunable_policy(`grafana_can_tcp_connect_prometheus_port',` # Prometheus default tcp port 9090
 	corenet_tcp_connect_websm_port(grafana_t)
+')
+
+optional_policy(`
+    systemd_private_tmp(grafana_tmp_t)
 ')
