@@ -70,6 +70,10 @@ Ensure policycoreutils-devel is installed and/or run: `sepolgen-ifgen`
 
 ## Removing the policy
 
+* When removing the policy, first stop the grafana-server
+```sh
+systemctl stop grafana-server
+```
 * To remove the policy, the added port must first be removed
 ```sh
 sudo semanage port -d -p tcp 3000
@@ -77,6 +81,18 @@ sudo semanage port -d -p tcp 3000
 * Now, to remove the policy run
 ```sh
 sudo semodule -r grafana
+```
+* Restore the contexts of the files
+```sh
+restorecon -RvF /usr/sbin/grafana-* \
+		/etc/grafana \
+		/var/log/grafana \
+		/var/lib/grafana \
+		/usr/share/performancecopilot-pcp-app
+```
+* Restart grafana-server
+```sh
+systemctl restart grafana-server
 ```
 ## Compatibility Notes
 Built on CentOS Stream 9 at the time with:
