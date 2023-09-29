@@ -36,7 +36,8 @@ restorecon -RvF /usr/sbin/grafana-* \
 		/etc/grafana \
 		/var/log/grafana \
 		/var/lib/grafana \
-		/usr/share/performancecopilot-pcp-app
+		/usr/libexec/grafana-pcp \
+#		/usr/share/performancecopilot-pcp-app \
 
 # Start grafana
 systemctl start grafana-server.service
@@ -88,7 +89,8 @@ restorecon -RvF /usr/sbin/grafana-* \
 		/etc/grafana \
 		/var/log/grafana \
 		/var/lib/grafana \
-		/usr/share/performancecopilot-pcp-app
+		/usr/libexec/grafana-pcp \
+#		/usr/share/performancecopilot-pcp-app
 ```
 * Restart grafana-server
 ```sh
