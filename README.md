@@ -90,7 +90,7 @@ restorecon -RvF /usr/sbin/grafana-* \
 		/var/log/grafana \
 		/var/lib/grafana \
 		/usr/libexec/grafana-pcp \
-		/usr/share/performancecopilot-pcp-app
+#		/usr/share/performancecopilot-pcp-app
 ```
 * Restart grafana-server
 ```sh
