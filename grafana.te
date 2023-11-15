@@ -87,6 +87,22 @@ allow grafana_t grafana_port_t:tcp_socket { name_bind name_connect };
 
 allow grafana_t self:unix_stream_socket connectto;
 
+optional_policy(`
+	require {
+		type smtp_port_t;
+		class tcp_socket { name_connect };
+	}
+	allow grafana_t smtp_port_t:tcp_socket name_connect;
+')
+
+optional_policy(`
+	require {
+		type usr_t;
+		class file { execute };
+	}
+	allow grafana_t usr_t:file execute;
+')
+
 manage_dirs_pattern(grafana_t, grafana_conf_t, grafana_conf_t)
 manage_files_pattern(grafana_t, grafana_conf_t, grafana_conf_t)
 
