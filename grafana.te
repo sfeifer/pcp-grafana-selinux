@@ -105,6 +105,17 @@ optional_policy(`
 	allow grafana_t usr_t:file execute;
 ')
 
+optional_policy(`
+	require {
+		type postgresql_t;
+		type postgresql_var_run_t;
+		class unix_stream_socket { connectto };
+		class sock_file { write };
+	}
+	allow grafana_t postgresql_t:unix_stream_socket connectto;
+	allow grafana_t postgresql_var_run_t:sock_file write;
+')
+
 manage_dirs_pattern(grafana_t, grafana_conf_t, grafana_conf_t)
 manage_files_pattern(grafana_t, grafana_conf_t, grafana_conf_t)
 
