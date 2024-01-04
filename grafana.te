@@ -87,6 +87,35 @@ allow grafana_t grafana_port_t:tcp_socket { name_bind name_connect };
 
 allow grafana_t self:unix_stream_socket connectto;
 
+allow grafana_t self:netlink_route_socket { create bind getattr nlmsg_read };
+
+optional_policy(`
+	require {
+		type smtp_port_t;
+		class tcp_socket { name_connect };
+	}
+	allow grafana_t smtp_port_t:tcp_socket name_connect;
+')
+
+optional_policy(`
+	require {
+		type usr_t;
+		class file { execute };
+	}
+	allow grafana_t usr_t:file execute;
+')
+
+optional_policy(`
+	require {
+		type postgresql_t;
+		type postgresql_var_run_t;
+		class unix_stream_socket { connectto };
+		class sock_file { write };
+	}
+	allow grafana_t postgresql_t:unix_stream_socket connectto;
+	allow grafana_t postgresql_var_run_t:sock_file write;
+')
+
 manage_dirs_pattern(grafana_t, grafana_conf_t, grafana_conf_t)
 manage_files_pattern(grafana_t, grafana_conf_t, grafana_conf_t)
 
