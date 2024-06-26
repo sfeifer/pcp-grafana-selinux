@@ -32,7 +32,7 @@ semodule -i grafana.pp
 semanage port -a -t grafana_port_t -p tcp 3000
 
 # Restore all the correct context labels
-restorecon -RvF /usr/sbin/grafana-* \
+restorecon -RvF /usr/sbin/grafana* \
 		/etc/grafana \
 		/var/log/grafana \
 		/var/lib/grafana \
@@ -85,7 +85,7 @@ sudo semodule -r grafana
 ```
 * Restore the contexts of the files
 ```sh
-restorecon -RvF /usr/sbin/grafana-* \
+restorecon -RvF /usr/sbin/grafana* \
 		/etc/grafana \
 		/var/log/grafana \
 		/var/lib/grafana \
