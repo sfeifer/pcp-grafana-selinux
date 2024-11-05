@@ -3,9 +3,14 @@
 
 /etc/grafana(/.*)?						gen_context(system_u:object_r:grafana_conf_t,s0)
 
+# bin and sbin are unified in some distributions
+# define context for both bin and sbin paths
 /usr/sbin/grafana-cli					--	gen_context(system_u:object_r:grafana_exec_t,s0)
 /usr/sbin/grafana-server				--	gen_context(system_u:object_r:grafana_exec_t,s0)
 /usr/sbin/grafana				        --	gen_context(system_u:object_r:grafana_exec_t,s0)
+/usr/bin/grafana-cli                    --    gen_context(system_u:object_r:grafana_exec_t,s0)
+/usr/bin/grafana-server                 --    gen_context(system_u:object_r:grafana_exec_t,s0)
+/usr/bin/grafana                        --    gen_context(system_u:object_r:grafana_exec_t,s0)
 
 /var/lib/grafana(/.*)?						gen_context(system_u:object_r:grafana_var_lib_t,s0)
 #/var/lib/grafana/grafana.db				--	gen_context(system_u:object_r:grafana_db_t,s0)
@@ -23,3 +28,4 @@
 #define context for pcp plugin
 #/usr/share/performancecopilot-pcp-app/datasources/redis/pcp_redis_datasource_(.*)           -- gen_context(system_u:object_r:grafana_pcp_exec_t,s0)
 /usr/libexec/grafana-pcp/datasources/redis/pcp_redis_datasource_(.*)           -- gen_context(system_u:object_r:grafana_pcp_exec_t,s0)
+/usr/libexec/grafana-pcp/datasources/valkey/pcp_valkey_datasource_(.*)         -- gen_context(system_u:object_r:grafana_pcp_exec_t,s0)
